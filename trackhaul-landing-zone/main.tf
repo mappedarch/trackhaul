@@ -11,3 +11,11 @@ module "organizations" {
   dev_email         = var.dev_email
   prod_email        = var.prod_email
 }
+
+module "scp" {
+  source = "./modules/scp"
+
+  security_ou_id       = module.organizations.security_ou_id
+  infrastructure_ou_id = module.organizations.infrastructure_ou_id
+  workloads_ou_id      = module.organizations.workloads_ou_id
+}
