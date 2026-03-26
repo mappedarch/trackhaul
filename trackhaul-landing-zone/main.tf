@@ -31,3 +31,11 @@ module "iam_identity_center" {
   dev_account_id         = var.dev_account_id
   prod_account_id        = var.prod_account_id
 }
+
+module "cloudtrail" {
+  source = "./modules/cloudtrail"
+
+  log_archive_account_id = var.log_archive_account_id
+  management_account_id  = var.management_account_id
+  org_id                 = var.org_id
+}
