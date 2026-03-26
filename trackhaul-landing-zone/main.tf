@@ -60,3 +60,15 @@ module "guardduty" {
     aws.security = aws.security
   }
 }
+
+module "securityhub" {
+  source = "./modules/securityhub"
+
+  security_account_id = var.security_account_id
+  primary_region      = var.aws_region
+
+  providers = {
+    aws          = aws
+    aws.security = aws.security
+  }
+}
