@@ -19,3 +19,15 @@ module "scp" {
   infrastructure_ou_id = module.organizations.infrastructure_ou_id
   workloads_ou_id      = module.organizations.workloads_ou_id
 }
+
+module "iam_identity_center" {
+  source = "./modules/iam-identity-center"
+
+  sso_instance_arn       = var.sso_instance_arn
+  identity_store_id      = var.identity_store_id
+  management_account_id  = var.management_account_id
+  security_account_id    = var.security_account_id
+  log_archive_account_id = var.log_archive_account_id
+  dev_account_id         = var.dev_account_id
+  prod_account_id        = var.prod_account_id
+}

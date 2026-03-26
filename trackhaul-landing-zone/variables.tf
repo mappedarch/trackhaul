@@ -69,3 +69,13 @@ variable "prod_email" {
   description = "Email for Prod account"
   type        = string
 }
+
+variable "sso_instance_arn" {
+  description = "ARN of the IAM Identity Center instance"
+  type        = string
+}
+
+variable "identity_store_id" {
+  description = "Identity Store ID for IAM Identity Center"
+  type        = string
+}
