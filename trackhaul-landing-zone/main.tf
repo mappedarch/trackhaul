@@ -72,3 +72,14 @@ module "securityhub" {
     aws.security = aws.security
   }
 }
+
+module "budgets" {
+  source = "./modules/budgets"
+
+  management_account_id  = var.management_account_id
+  security_account_id    = var.security_account_id
+  log_archive_account_id = var.log_archive_account_id
+  dev_account_id         = var.dev_account_id
+  prod_account_id        = var.prod_account_id
+  alert_email            = var.alert_email
+}

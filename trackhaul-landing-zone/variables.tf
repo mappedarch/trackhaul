@@ -79,3 +79,8 @@ variable "identity_store_id" {
   description = "Identity Store ID for IAM Identity Center"
   type        = string
 }
+
+variable "alert_email" {
+  description = "Email for budget and security alerts"
+  type        = string
+}
