@@ -39,3 +39,11 @@ module "cloudtrail" {
   management_account_id  = var.management_account_id
   org_id                 = var.org_id
 }
+
+module "config" {
+  source = "./modules/config"
+
+  management_account_id = var.management_account_id
+  primary_region        = var.aws_region
+  dr_region             = var.aws_region_dr
+}
