@@ -1,0 +1,65 @@
+# Terraform providers and modules - never commit
+**/.terraform/*
+.terraform/
+trackhaul-landing-zone/.terraform/
+trackhaul-landing-zone/.terraform/*
+
+# State files - never commit
+*.tfstate
+*.tfstate.*
+*.tfstate.lock.info
+
+tfplan
+*.tfplan
+
+# State files - never commit
+trackhaul-landing-zone/*.tfstate
+trackhaul-landing-zone/*.tfstate.*
+trackhaul-landing-zone/*.tfstate.lock.info
+
+trackhaul-landing-zone/tfplan
+trackhaul-landing-zone/*.tfplan
+trackhaul-landing-zone/*.tfvars
+
+# Crash logs
+crash.log
+crash.*.log
+
+# Secret var files only
+secret*.tfvars
+*.auto.tfvars
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Secrets
+*.pem
+*.key
+secrets.txt
+
+# Override files
+override.tf
+override.tf.json
+
+# AWS credentials — never ever commit
+.aws/
+credentials
+
+trackhaul\PROJECT-CONTEXT.md
+
