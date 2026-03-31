@@ -83,3 +83,10 @@ module "budgets" {
   prod_account_id        = var.prod_account_id
   alert_email            = var.alert_email
 }
+
+module "control_tower" {
+  source = "./modules/control-tower"
+
+  log_archive_account_id = var.log_archive_account_id
+  security_account_id    = var.security_account_id
+}

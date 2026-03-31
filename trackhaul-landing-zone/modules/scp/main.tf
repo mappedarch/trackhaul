@@ -121,6 +121,13 @@ resource "aws_organizations_policy" "gdpr_data" {
           "Null" = {
             "s3:x-amz-server-side-encryption" = "true"
           }
+          StringNotLike = {
+          "aws:PrincipalARN" = [
+            "arn:aws:iam::*:role/AWSControlTowerExecution",
+            "arn:aws:iam::*:role/aws-controltower-*",
+            "arn:aws:iam::*:role/aws-controltower-ConfigRecorderRole*"
+          ]
+        }
         }
       }
     ]

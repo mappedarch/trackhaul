@@ -61,5 +61,11 @@ override.tf.json
 .aws/
 credentials
 
-trackhaul\PROJECT-CONTEXT.md
+chaos-simulation/terraform.tfstate
+chaos-simulation/terraform.tfstate.backup
+chaos-simulation/.terraform/
 
+*/*/config.json
+
+PROJECT-CONTEXT.md
+trackhaul-landing-zone/.terraform.lock.hcl

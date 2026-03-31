@@ -47,7 +47,10 @@ resource "aws_organizations_organizational_unit" "workloads" {
 resource "aws_organizations_account" "log_archive" {
   name      = "trackhaul-log-archive"
   email     = var.log_archive_email
-  parent_id = aws_organizations_organizational_unit.infrastructure.id
+  #parent_id = aws_organizations_organizational_unit.infrastructure.id
+  # changing this to match the required changes for phase 2 - moving the log archive 
+  # to security OU
+  parent_id = aws_organizations_organizational_unit.security.id
 
   tags = {
     AccountType = "Log-Archive"
@@ -121,5 +124,10 @@ resource "aws_organizations_account" "security" {
 
 resource "aws_organizations_organizational_unit" "management" {
   name      = "Management"
+  parent_id = data.aws_organizations_organization.this.roots[0].id
+}
+
+resource "aws_organizations_organizational_unit" "suspended" {
+  name      = "suspended"
   parent_id = data.aws_organizations_organization.this.roots[0].id
 }
