@@ -10,6 +10,7 @@ module "organizations" {
   log_archive_email = var.log_archive_email
   dev_email         = var.dev_email
   prod_email        = var.prod_email
+  aft_email         = var.aft_email       
 }
 
 module "scp" {

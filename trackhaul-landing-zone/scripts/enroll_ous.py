@@ -41,6 +41,9 @@ EXCLUDED_OUS = {"Suspended", "suspended", "Management", "Security"}
 POLL_INTERVAL_SECONDS = 30
 ENROLLMENT_TIMEOUT_SECONDS = 3600
 
+# Individual accounts to enroll (name, id) — accounts created after OU enrollment
+INDIVIDUAL_ACCOUNT_NAMES = {"trackhaul-aft"}
+
 
 # ----------------------------------------------------------------------------
 # Helpers
@@ -77,6 +80,16 @@ def get_all_ous(org_client, root_id):
     for page in paginator.paginate(ParentId=root_id):
         ous.extend(page["OrganizationalUnits"])
     return ous
+
+
+def get_accounts_by_name(org_client, account_names):
+    accounts = []
+    paginator = org_client.get_paginator("list_accounts")
+    for page in paginator.paginate():
+        for account in page["Accounts"]:
+            if account["Name"] in account_names and account["Status"] == "ACTIVE":
+                accounts.append((account["Name"], account["Id"]))
+    return accounts
 
 
 def get_baseline_arn(ct_client, baseline_name):
@@ -163,6 +176,42 @@ def enroll_ou(ct_client, ou, baseline_arn, management_account_id, org_id):
         log(f"  UNEXPECTED ERROR: {e}")
         return False
 
+def enroll_account(ct_client, account_id, account_name, baseline_arn, management_account_id, org_id):
+    target_arn = f"arn:aws:organizations::{management_account_id}:account/{org_id}/{account_id}"
+
+    log(f"Processing account: {account_name} ({account_id})")
+
+    already_enrolled, existing_arn = check_already_enrolled(ct_client, target_arn)
+    if already_enrolled:
+        log(f"  SKIPPED: Already enrolled ({existing_arn})")
+        return True
+
+    try:
+        response = ct_client.enable_baseline(
+            baselineIdentifier=baseline_arn,
+            baselineVersion=BASELINE_VERSION,
+            targetIdentifier=target_arn,
+        )
+        operation_id = response.get("operationIdentifier")
+        if not operation_id:
+            log(f"  ERROR: No operation ID returned")
+            return False
+        log(f"  Baseline application initiated — operation: {operation_id}")
+        log(f"  Polling every {POLL_INTERVAL_SECONDS}s...")
+        return poll_operation(ct_client, operation_id, account_name)
+
+    except ct_client.exceptions.ConflictException as e:
+        log(f"  CONFLICT: Already enrolled — {e}")
+        return True
+    except ct_client.exceptions.ValidationException as e:
+        log(f"  VALIDATION ERROR: {e}")
+        return False
+    except ct_client.exceptions.AccessDeniedException as e:
+        log(f"  ACCESS DENIED: Ensure credentials are for Management account ({management_account_id})")
+        return False
+    except Exception as e:
+        log(f"  UNEXPECTED ERROR: {e}")
+        return False
 
 # ----------------------------------------------------------------------------
 # Main
@@ -179,6 +228,7 @@ def main():
     root_id = get_root_id(org_client)
     all_ous = get_all_ous(org_client, root_id)
     baseline_arn = get_baseline_arn(ct_client, BASELINE_NAME)
+    individual_accounts = get_accounts_by_name(org_client, INDIVIDUAL_ACCOUNT_NAMES)
 
     enrollable_ous = [ou for ou in all_ous if ou["Name"] not in EXCLUDED_OUS]
 
@@ -215,9 +265,20 @@ def main():
             log(f"  Waiting 15s before next OU...")
             time.sleep(15)
 
+    # Enroll individual accounts not covered by OU-level enrollment
+    if individual_accounts:
+        log("")
+        log("Enrolling individual accounts...")
+        log("-" * 60)
+        for account_name, account_id in individual_accounts:
+            log("")
+            success = enroll_account(ct_client, account_id, account_name, baseline_arn, management_account_id, org_id)
+            results.append({"ou": account_name, "ou_id": account_id, "success": success})
+
     log("")
     log("=" * 60)
     log("ENROLLMENT SUMMARY")
+
     log("=" * 60)
     for r in results:
         status = "SUCCESS" if r["success"] else "FAILED"

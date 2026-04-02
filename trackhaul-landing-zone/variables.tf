@@ -84,3 +84,8 @@ variable "alert_email" {
   description = "Email for budget and security alerts"
   type        = string
 }
+
+variable "aft_email" {
+  description = "Email address for the AFT account"
+  type        = string
+}

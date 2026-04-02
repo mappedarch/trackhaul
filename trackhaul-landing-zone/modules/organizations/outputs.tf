@@ -47,3 +47,13 @@ output "management_ou_id" {
   description = "Management OU ID"
   value       = aws_organizations_organizational_unit.management.id
 }
+
+output "aft_ou_id" {
+  description = "ID of the AFT OU"
+  value       = aws_organizations_organizational_unit.aft.id
+}
+
+output "aft_account_id" {
+  description = "Account ID of the AFT account"
+  value       = aws_organizations_account.aft.id
+}

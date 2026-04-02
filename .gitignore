@@ -19,7 +19,8 @@ trackhaul-landing-zone/*.tfstate.lock.info
 
 trackhaul-landing-zone/tfplan
 trackhaul-landing-zone/*.tfplan
-trackhaul-landing-zone/*.tfvars
+*/*.tfvars
+*/*/*.tfvars
 
 # Crash logs
 crash.log
@@ -69,3 +70,10 @@ chaos-simulation/.terraform/
 
 PROJECT-CONTEXT.md
 trackhaul-landing-zone/.terraform.lock.hcl
+
+trackhaul-landing-zone/chaos-simulation/.terraform.lock.hcl
+
+# AFT operational repos — managed in CodeCommit
+aft-repos/
+
+

@@ -122,6 +122,26 @@ resource "aws_organizations_account" "security" {
   }
 }
 
+resource "aws_organizations_organizational_unit" "aft" {
+  name      = "AFT"
+  parent_id = data.aws_organizations_organization.this.roots[0].id
+}
+
+resource "aws_organizations_account" "aft" {
+  name      = "trackhaul-aft"
+  email     = var.aft_email
+  parent_id = aws_organizations_organizational_unit.aft.id
+
+  tags = {
+    AccountType = "AFT"
+    GDPR        = "true"
+  }
+
+  lifecycle {
+    prevent_destroy = true
+  }
+}
+
 resource "aws_organizations_organizational_unit" "management" {
   name      = "Management"
   parent_id = data.aws_organizations_organization.this.roots[0].id
@@ -131,3 +151,6 @@ resource "aws_organizations_organizational_unit" "suspended" {
   name      = "suspended"
   parent_id = data.aws_organizations_organization.this.roots[0].id
 }
+
+
+

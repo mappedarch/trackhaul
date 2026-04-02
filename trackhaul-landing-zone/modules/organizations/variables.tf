@@ -27,3 +27,8 @@ variable "prod_email" {
   description = "Email address for Prod account — must be unique"
   type        = string
 }
+
+variable "aft_email" {
+  description = "Email address for the AFT management account"
+  type        = string
+}
