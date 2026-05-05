@@ -11,12 +11,12 @@ All infrastructure is defined in Terraform using a modular structure. No manual 
 | # | Project | Status | Folder |
 |---|---|---|---|
 | 1 | Multi-Account Landing Zone | Done | [trackhaul-landing-zone](./trackhaul-landing-zone/) |
-| 2 | Serverless Fleet Management API | Planned | [trackhaul-fleet-api](./trackhaul-fleet-api/) |
-| 3 | Event-Driven Processing Pipeline | Planned | [trackhaul-event-pipeline](./trackhaul-event-pipeline/) |
-| 4 | Real-Time Streaming Telemetry | Planned | [trackhaul-streaming](./trackhaul-streaming/) |
-| 5 | AI Fleet Intelligence Layer | Planned | [trackhaul-ai](./trackhaul-ai/) |
-| 6 | LLMOps and AIOps | ⏳ Planned | [trackhaul-llmops](./trackhaul-llmops/) |
-| 7 | Agentic AI and Multi-Agent System | Planned | [trackhaul-agents](./trackhaul-agents/) |
+| 2 | Serverless Fleet Management API | Planned | - |
+| 3 | Event-Driven Processing Pipeline | Planned | - |
+| 4 | Real-Time Streaming Telemetry | Planned | - |
+| 5 | AI Fleet Intelligence Layer | Planned | - |
+| 6 | LLMOps and AIOps | Planned | - |
+| 7 | Agentic AI and Multi-Agent System | Planned | - |
 
 ---
 
@@ -111,3 +111,13 @@ terraform apply -var-file="environments/dev.tfvars"
 
 GDPR compliance is a primary design constraint throughout this platform. EU data residency is enforced at the SCP layer, not left to convention. Driver PII does not appear in any event payload, telemetry record, or LLM prompt. CloudTrail provides a complete audit trail of all API activity across all accounts.
 
+---
+
+## Blog Series
+
+The architecture and implementation decisions across all multiple projects are documented in a Medium article series.
+
+| Part | Topic |
+|---|---|
+| Series Overview | [Building a GDPR-Compliant Fleet Intelligence Platform on AWS](https://mappedarch.medium.com/building-a-gdpr-compliant-fleet-intelligence-platform-on-aws-a-five-part-series-24cb116eab9a) |
+Rest of the topics are upcoming
