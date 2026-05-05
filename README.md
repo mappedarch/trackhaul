@@ -120,4 +120,5 @@ The architecture and implementation decisions across all multiple projects are d
 | Part | Topic |
 |---|---|
 | Series Overview | [Building a GDPR-Compliant Fleet Intelligence Platform on AWS](https://mappedarch.medium.com/building-a-gdpr-compliant-fleet-intelligence-platform-on-aws-a-five-part-series-24cb116eab9a) |
+| Part 1 | [Multi-Account Landing Zone — GDPR-Compliant AWS Governance] | (https://mappedarch.medium.com/building-a-gdpr-compliant-fleet-intelligence-platform-on-aws-phase-1-the-landing-zone-a4b3ab2dcff1)
 Rest of the topics are upcoming
