@@ -6,7 +6,7 @@ All infrastructure is defined in Terraform using a modular structure. No manual 
 
 ---
 
-## Architecture
+## Flow
 
 ```
 Dispatcher / Ops Admin
