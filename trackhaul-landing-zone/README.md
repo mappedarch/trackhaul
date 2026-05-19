@@ -14,8 +14,6 @@ The platform was built in phases. Each phase builds on the previous one and is d
 |---|---|---|
 | [Phase 1 — Landing Zone](docs/phase1-landing-zone.md) | GDPR-compliant AWS foundation. Organizations, SCPs, IAM Identity Center, CloudTrail, Config, GuardDuty, Security Hub, Budgets. | Complete |
 | [Phase 2 — Chaos to Governance](docs/phase2-governance.md) | Chaos simulation in Dev account, followed by full Control Tower enrollment and AFT deployment for automated account vending. | Complete |
-| Phase 3 — Enterprise Compliance | Multi-regulation compliance layer. PCI-DSS, ISO 27001, NIS2, SOC2. | Planned |
-| Phase 4 — Workloads | Application workloads on the governance foundation. | Planned |
 
 ---
 
@@ -25,8 +23,6 @@ The platform was built in phases. Each phase builds on the previous one and is d
 Root
 ├── Management OU
 │   └── Management Account        — Org governance only, zero workloads
-├── AFT OU
-│   └── AFT Account               — Account Factory for Terraform pipeline
 ├── Security OU
 │   ├── Security Account          — GuardDuty + Security Hub delegated admin
 │   └── Log Archive Account       — Immutable CloudTrail logs, WORM storage
