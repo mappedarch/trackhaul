@@ -1,6 +1,6 @@
 # TrackHaul AI Fleet Intelligence Platform
 
-A production-grade AWS platform built for TrackHaul, a Fictional European logistics operator managing 10,000 trucks. The platform covers GDPR-compliant multi-account governance, serverless fleet operations, real-time telemetry processing, and an AI fleet intelligence layer built on Amazon Bedrock.
+A production-grade AWS platform built for TrackHaul, a Fictional European logistics operator managing large number of trucks (Eg. 10000). The platform covers GDPR-compliant multi-account governance, serverless fleet operations, real-time telemetry processing, and an AI fleet intelligence layer built on Amazon Bedrock.
 
 All infrastructure is defined in Terraform using a modular structure. No manual console configuration is used. Security controls are applied at every layer.
 
@@ -120,5 +120,8 @@ The architecture and implementation decisions across all multiple projects are d
 | Part | Topic |
 |---|---|
 | Series Overview | [Building a GDPR-Compliant Fleet Intelligence Platform on AWS](https://mappedarch.medium.com/building-a-gdpr-compliant-fleet-intelligence-platform-on-aws-a-five-part-series-24cb116eab9a) |
-| Part 1 | [Multi-Account Landing Zone — GDPR-Compliant AWS Governance](https://mappedarch.medium.com/building-a-gdpr-compliant-fleet-intelligence-platform-on-aws-phase-1-the-landing-zone-a4b3ab2dcff1) |
-Rest of the topics are upcoming
+| Part 1 | [Multi-Account Landing Zone](https://mappedarch.medium.com/building-a-gdpr-compliant-fleet-intelligence-platform-on-aws-phase-1-the-landing-zone-a4b3ab2dcff1) |
+| Part 2 | [Chaos to Control - The Control Tower](https://mappedarch.medium.com/building-a-gdpr-compliant-fleet-intelligence-platform-on-aws-phase-1-the-landing-zone-a4b3ab2dcff1) |
+| Part 3 | [Fleet Management API](https://medium.com/@mappedarch/fleet-intelligence-platform-on-aws-part-3-fleet-management-api-2467e6fd19db) |
+
+*Remaining parts are upcoming.*
