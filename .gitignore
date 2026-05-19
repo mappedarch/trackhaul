@@ -3,6 +3,7 @@
 .terraform/
 trackhaul-landing-zone/.terraform/
 trackhaul-landing-zone/.terraform/*
+**/builds/
 
 # State files - never commit
 *.tfstate
@@ -19,8 +20,7 @@ trackhaul-landing-zone/*.tfstate.lock.info
 
 trackhaul-landing-zone/tfplan
 trackhaul-landing-zone/*.tfplan
-*/*.tfvars
-*/*/*.tfvars
+*.tfvars
 
 # Crash logs
 crash.log
@@ -69,11 +69,13 @@ chaos-simulation/.terraform/
 */*/config.json
 
 PROJECT-CONTEXT.md
-trackhaul-landing-zone/.terraform.lock.hcl
-
-trackhaul-landing-zone/chaos-simulation/.terraform.lock.hcl
 
 # AFT operational repos — managed in CodeCommit
 aft-repos/
 
 
+token.json
+token.json
+**/token.json
+**/response.json
+**/.terraform.lock.hcl
