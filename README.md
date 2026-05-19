@@ -11,7 +11,7 @@ All infrastructure is defined in Terraform using a modular structure. No manual 
 | # | Project | Status | Folder |
 |---|---|---|---|
 | 1 | Multi-Account Landing Zone | Done | [trackhaul-landing-zone](./trackhaul-landing-zone/) |
-| 2 | Serverless Fleet Management API | Planned | - |
+| 2 | Serverless Fleet Management API | Done | [trackhaul-fleet-api](./trackhaul-fleet-api/) |
 | 3 | Event-Driven Processing Pipeline | Planned | - |
 | 4 | Real-Time Streaming Telemetry | Planned | - |
 | 5 | AI Fleet Intelligence Layer | Planned | - |
@@ -59,7 +59,7 @@ aws sts get-caller-identity --profile trackhaul-mgmt
 ```
 trackhaul/
 ├── trackhaul-landing-zone/          # Project 1 — Multi-Account Landing Zone
-├── trackhaul-fleet-api/             # Project 2 — Serverless Fleet API (planned)
+├── trackhaul-fleet-api/             # Project 2 — Serverless Fleet API 
 ├── trackhaul-event-pipeline/        # Project 3 — Event-Driven Pipeline (planned)
 ├── trackhaul-streaming/             # Project 4 — Real-Time Telemetry (planned)
 ├── trackhaul-ai/                    # Project 5 — AI Fleet Intelligence Layer (planned)
