@@ -12,7 +12,7 @@ All infrastructure is defined in Terraform using a modular structure. No manual 
 |---|---|---|---|
 | 1 | Multi-Account Landing Zone | Done | [trackhaul-landing-zone](./trackhaul-landing-zone/) |
 | 2 | Serverless Fleet Management API | Done | [trackhaul-fleet-api](./trackhaul-fleet-api/) |
-| 3 | Event-Driven Processing Pipeline | Planned | - |
+| 3 | Event-Driven Processing Pipeline | Done | [trackhaul-event-pipeline](./trackhaul-event-pipeline/) |
 | 4 | Real-Time Streaming Telemetry | Planned | - |
 | 5 | AI Fleet Intelligence Layer | Planned | - |
 | 6 | LLMOps and AIOps | Planned | - |
