@@ -1,7 +1,4 @@
 # modules/organizations/outputs.tf
-# These values are exported after apply.
-# Other modules will use these — for example the SCP module
-# needs the OU IDs to attach policies to them.
 
 output "root_id" {
   description = "Organization Root ID"
@@ -28,6 +25,21 @@ output "workloads_ou_id" {
   value       = aws_organizations_organizational_unit.workloads.id
 }
 
+output "dev_ou_id" {
+  description = "Dev OU ID"
+  value       = aws_organizations_organizational_unit.dev.id
+}
+
+output "prod_ou_id" {
+  description = "Prod OU ID"
+  value       = aws_organizations_organizational_unit.prod.id
+}
+
+output "security_account_id" {
+  description = "Security account ID"
+  value       = aws_organizations_account.security.id
+}
+
 output "log_archive_account_id" {
   description = "Log Archive account ID"
   value       = aws_organizations_account.log_archive.id
@@ -41,19 +53,4 @@ output "dev_account_id" {
 output "prod_account_id" {
   description = "Prod account ID"
   value       = aws_organizations_account.prod.id
-}
-
-output "management_ou_id" {
-  description = "Management OU ID"
-  value       = aws_organizations_organizational_unit.management.id
-}
-
-output "aft_ou_id" {
-  description = "ID of the AFT OU"
-  value       = aws_organizations_organizational_unit.aft.id
-}
-
-output "aft_account_id" {
-  description = "Account ID of the AFT account"
-  value       = aws_organizations_account.aft.id
 }

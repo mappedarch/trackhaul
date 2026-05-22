@@ -1,7 +1,4 @@
 # variables.tf
-# All input variables for the root module.
-# No hardcoded values anywhere in .tf files — everything comes from here
-# and gets its actual value from terraform.tfvars
 
 variable "aws_region" {
   description = "Primary AWS region — must be EU for GDPR compliance"
@@ -20,33 +17,8 @@ variable "management_account_id" {
   type        = string
 }
 
-variable "security_account_id" {
-  description = "AWS Account ID for Security account"
-  type        = string
-}
-
-variable "log_archive_account_id" {
-  description = "AWS Account ID for Log Archive account"
-  type        = string
-}
-
-variable "dev_account_id" {
-  description = "AWS Account ID for Dev account"
-  type        = string
-}
-
-variable "prod_account_id" {
-  description = "AWS Account ID for Prod account"
-  type        = string
-}
-
 variable "org_id" {
   description = "AWS Organizations ID"
-  type        = string
-}
-
-variable "management_email" {
-  description = "Email for Management account"
   type        = string
 }
 
@@ -70,22 +42,7 @@ variable "prod_email" {
   type        = string
 }
 
-variable "sso_instance_arn" {
-  description = "ARN of the IAM Identity Center instance"
-  type        = string
-}
-
-variable "identity_store_id" {
-  description = "Identity Store ID for IAM Identity Center"
-  type        = string
-}
-
 variable "alert_email" {
   description = "Email for budget and security alerts"
-  type        = string
-}
-
-variable "aft_email" {
-  description = "Email address for the AFT account"
   type        = string
 }

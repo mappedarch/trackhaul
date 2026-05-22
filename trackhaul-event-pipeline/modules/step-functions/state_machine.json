@@ -1,0 +1,84 @@
+{
+  "Comment": "TrackHaul incident orchestration workflow",
+  "StartAt": "DiagnoseFault",
+  "States": {
+    "DiagnoseFault": {
+      "Type": "Task",
+      "Resource": "${diagnose_lambda_arn}",
+      "ResultPath": "$.diagnose_result",
+      "Retry": [
+        {
+          "ErrorEquals": ["Lambda.ServiceException", "Lambda.AWSLambdaException"],
+          "IntervalSeconds": 2,
+          "MaxAttempts": 3,
+          "BackoffRate": 2
+        }
+      ],
+      "Catch": [
+        {
+          "ErrorEquals": ["States.ALL"],
+          "Next": "EscalateToOps",
+          "ResultPath": "$.error"
+        }
+      ],
+      "Next": "CheckMaintenanceHistory"
+    },
+    "CheckMaintenanceHistory": {
+      "Type": "Task",
+      "Resource": "${maintenance_lambda_arn}",
+      "ResultPath": "$.maintenance_result",
+      "Retry": [
+        {
+          "ErrorEquals": ["Lambda.ServiceException", "Lambda.AWSLambdaException"],
+          "IntervalSeconds": 2,
+          "MaxAttempts": 3,
+          "BackoffRate": 2
+        }
+      ],
+      "Catch": [
+        {
+          "ErrorEquals": ["States.ALL"],
+          "Next": "EscalateToOps",
+          "ResultPath": "$.error"
+        }
+      ],
+      "Next": "EvaluateSeverity"
+    },
+    "EvaluateSeverity": {
+      "Type": "Choice",
+      "Choices": [
+        {
+          "Variable": "$.severity",
+          "StringEquals": "CRITICAL",
+          "Next": "EscalateToOps"
+        },
+        {
+          "Variable": "$.severity",
+          "StringEquals": "LOW",
+          "Next": "AutoResolve"
+        }
+      ],
+      "Default": "EscalateToOps"
+    },
+    "EscalateToOps": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::sns:publish",
+      "Parameters": {
+        "TopicArn": "${critical_alerts_topic_arn}",
+        "Message.$": "States.Format('CRITICAL incident for truck {}. Fault: {}. Source: {}. Action: Manual escalation required.', $.truck_id, $.fault_code, $.source)",
+        "Subject": "TrackHaul Critical Fleet Incident"
+      },
+      "End": true
+    },
+    "AutoResolve": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::sns:publish",
+      "Parameters": {
+        "TopicArn": "${maintenance_alerts_topic_arn}",
+        "Message.$": "States.Format('Maintenance recommendation for truck {}. Fault: {}. Action: Schedule service within 48 hours.', $.truck_id, $.fault_code)",
+        "Subject": "TrackHaul Maintenance Recommendation"
+      },
+      "End": true
+    }
+  }
+}

@@ -31,6 +31,7 @@ provider "aws" {
 }
 
 # Provider for Security account — used for GuardDuty org configuration
+/*
 provider "aws" {
   alias  = "security"
   region = var.aws_region
@@ -49,3 +50,4 @@ provider "aws" {
     }
   }
 }
+*/
