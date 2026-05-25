@@ -18,3 +18,8 @@ variable "tags" {
   type        = map(string)
   default     = {}
 }
+
+variable "eventbridge_role_arn" {
+  description = "ARN of the EventBridge IAM role that delivers to encrypted SQS queues"
+  type        = string
+}

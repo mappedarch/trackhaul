@@ -1,6 +1,6 @@
 # TrackHaul AI Fleet Intelligence Platform
 
-A production-grade AWS platform built for TrackHaul, a Fictional European logistics operator managing large number of trucks (Eg. 10000). The platform covers GDPR-compliant multi-account governance, serverless fleet operations, real-time telemetry processing, and an AI fleet intelligence layer built on Amazon Bedrock.
+A production-grade AWS platform built for TrackHaul, a fictional European logistics operator managing large number of trucks (e.g. 10,000). The platform covers GDPR-compliant multi-account governance, serverless fleet operations, real-time telemetry processing, and an AI fleet intelligence layer built on Amazon Bedrock.
 
 All infrastructure is defined in Terraform using a modular structure. No manual console configuration is used. Security controls are applied at every layer.
 
@@ -13,7 +13,7 @@ All infrastructure is defined in Terraform using a modular structure. No manual 
 | 1 | Multi-Account Landing Zone | Done | [trackhaul-landing-zone](./trackhaul-landing-zone/) |
 | 2 | Serverless Fleet Management API | Done | [trackhaul-fleet-api](./trackhaul-fleet-api/) |
 | 3 | Event-Driven Processing Pipeline | Done | [trackhaul-event-pipeline](./trackhaul-event-pipeline/) |
-| 4 | Real-Time Streaming Telemetry | Planned | - |
+| 4 | Real-Time Streaming Telemetry | Done | [trackhaul-streaming](./trackhaul-streaming/) |
 | 5 | AI Fleet Intelligence Layer | Planned | - |
 | 6 | LLMOps and AIOps | Planned | - |
 | 7 | Agentic AI and Multi-Agent System | Planned | - |
@@ -44,7 +44,7 @@ All infrastructure is defined in Terraform using a modular structure. No manual 
 
 Authenticate via IAM Identity Center before running any Terraform commands. No long-lived IAM user credentials are used anywhere in this project.
 
-```powershell
+```bash
 # Authenticate via SSO
 aws sso login --profile trackhaul-mgmt
 
@@ -59,9 +59,9 @@ aws sts get-caller-identity --profile trackhaul-mgmt
 ```
 trackhaul/
 ├── trackhaul-landing-zone/          # Project 1 — Multi-Account Landing Zone
-├── trackhaul-fleet-api/             # Project 2 — Serverless Fleet API 
-├── trackhaul-event-pipeline/        # Project 3 — Event-Driven Pipeline (planned)
-├── trackhaul-streaming/             # Project 4 — Real-Time Telemetry (planned)
+├── trackhaul-fleet-api/             # Project 2 — Serverless Fleet API
+├── trackhaul-event-pipeline/        # Project 3 — Event-Driven Pipeline
+├── trackhaul-streaming/             # Project 4 — Real-Time Streaming Telemetry
 ├── trackhaul-ai/                    # Project 5 — AI Fleet Intelligence Layer (planned)
 ├── trackhaul-llmops/                # Project 6 — LLMOps and AIOps (planned)
 ├── trackhaul-agents/                # Project 7 — Agentic AI (planned)
@@ -74,9 +74,9 @@ trackhaul/
 
 Each project folder contains its own README with project-specific deployment instructions. The general pattern for all projects is:
 
-```powershell
+```bash
 # 1. Navigate to the project folder
-Set-Location .\trackhaul-landing-zone
+cd trackhaul-landing-zone
 
 # 2. Authenticate via SSO
 aws sso login --profile trackhaul-mgmt
@@ -85,10 +85,10 @@ aws sso login --profile trackhaul-mgmt
 terraform init
 
 # 4. Review the plan
-terraform plan -var-file="environments/dev.tfvars"
+terraform plan
 
 # 5. Apply
-terraform apply -var-file="environments/dev.tfvars"
+terraform apply
 ```
 
 ---
@@ -115,7 +115,7 @@ GDPR compliance is a primary design constraint throughout this platform. EU data
 
 ## Blog Series
 
-The architecture and implementation decisions across all multiple projects are documented in a Medium article series.
+The architecture and implementation decisions across all projects are documented in a Medium article series.
 
 | Part | Topic |
 |---|---|

@@ -103,6 +103,18 @@ resource "aws_kms_key" "pipeline" {
           "kms:GenerateDataKey"
         ]
         Resource = "*"
+      },
+      {
+        Sid    = "AllowEventBridgeSQSDelivery"
+        Effect = "Allow"
+        Principal = {
+          AWS = var.eventbridge_role_arn
+        }
+        Action = [
+          "kms:Decrypt",
+          "kms:GenerateDataKey"
+        ]
+        Resource = "*"
       }
     ]
   })

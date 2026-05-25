@@ -96,7 +96,10 @@ module "kms_kinesis" {
   description               = "KMS key for TrackHaul Kinesis telemetry stream"
   deletion_window_in_days   = 30
   allowed_service_principal = "kinesis.amazonaws.com"
-  allowed_iam_arns          = [module.firehose.firehose_role_arn]
+  allowed_iam_arns          = [
+    "arn:aws:iam::${var.aws_account_id}:role/trackhaul-firehose-${var.environment}",
+    "arn:aws:iam::${var.aws_account_id}:role/trackhaul-telemetry-consumer-${var.environment}-role"
+  ]
   aws_account_id            = var.aws_account_id
   environment               = var.environment
   tags                      = local.common_tags

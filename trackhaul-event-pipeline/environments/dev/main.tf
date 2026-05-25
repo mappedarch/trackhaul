@@ -36,6 +36,7 @@ module "kms" {
   project          = var.project
   environment      = var.environment
   lambda_role_arns = local.lambda_role_arns
+  eventbridge_role_arn = "arn:aws:iam::${var.aws_account_id}:role/trackhaul-${var.environment}-eventbridge-sqs-role"
 
   tags = {
     Project     = var.project

@@ -92,6 +92,11 @@ resource "aws_iam_role_policy" "sfn_invoke_lambda" {
           "logs:DescribeLogGroups"
         ]
         Resource = "*"
+      },
+      {
+        Effect   = "Allow"
+        Action   = ["kms:Decrypt", "kms:GenerateDataKey"]
+        Resource = var.kms_key_arn
       }
     ]
   })
