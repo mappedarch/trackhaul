@@ -19,19 +19,6 @@ locals {
   }
 }
 
-module "kms_kinesis" {
-  source = "../../modules/kms"
-
-  alias_name                = "trackhaul-kinesis-${var.environment}"
-  description               = "KMS key for TrackHaul Kinesis telemetry stream"
-  deletion_window_in_days   = 30
-  allowed_service_principal = "kinesis.amazonaws.com"
-  allowed_iam_arns          = []
-  aws_account_id            = var.aws_account_id
-  environment               = var.environment
-  tags                      = local.common_tags
-}
-
 module "kinesis" {
   source = "../../modules/kinesis"
 
@@ -100,4 +87,17 @@ module "firehose" {
   aws_region          = var.aws_region
   environment         = var.environment
   tags                = local.common_tags
+}
+
+module "kms_kinesis" {
+  source = "../../modules/kms"
+
+  alias_name                = "trackhaul-kinesis-${var.environment}"
+  description               = "KMS key for TrackHaul Kinesis telemetry stream"
+  deletion_window_in_days   = 30
+  allowed_service_principal = "kinesis.amazonaws.com"
+  allowed_iam_arns          = [module.firehose.firehose_role_arn]
+  aws_account_id            = var.aws_account_id
+  environment               = var.environment
+  tags                      = local.common_tags
 }
