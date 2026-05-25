@@ -1,0 +1,54 @@
+TRACKHAUL FLEET MAINTENANCE MANUAL
+Section 3: Engine Fault Codes
+
+FAULT CODE: P0300
+Description: Random or Multiple Cylinder Misfire Detected
+Severity: HIGH
+Immediate Action Required: Yes
+
+Symptoms:
+- Engine warning light illuminated
+- Rough idle or vibration
+- Reduced engine power
+- Increased fuel consumption
+
+Diagnostic Steps:
+1. Connect OBD-II scanner to vehicle port
+2. Record all active and pending fault codes
+3. Check spark plugs for wear or fouling
+4. Inspect ignition coils for resistance (should be 0.5-1.5 ohms)
+5. Check fuel injectors for proper operation
+6. Inspect for vacuum leaks around intake manifold
+
+Resolution:
+- Replace faulty spark plugs if gap exceeds 1.1mm
+- Replace ignition coil on affected cylinder
+- Clean or replace fuel injectors if flow rate is below specification
+- Repair vacuum leaks with approved sealant
+
+Estimated Repair Time: 2-4 hours
+Parts Required: Spark plugs (set), ignition coil (per cylinder)
+Next Service Interval: 10,000 km after repair
+
+FAULT CODE: P0171
+Description: System Too Lean (Bank 1)
+Severity: MEDIUM
+Immediate Action Required: No — monitor for 48 hours
+
+Symptoms:
+- Reduced fuel efficiency
+- Hesitation on acceleration
+- Occasional rough idle
+
+Diagnostic Steps:
+1. Check mass airflow sensor readings
+2. Inspect fuel pressure at rail (minimum 350 kPa)
+3. Check oxygen sensor voltage (should oscillate 0.1-0.9V)
+4. Inspect for air leaks after MAF sensor
+
+Resolution:
+- Clean MAF sensor with approved cleaner
+- Replace fuel filter if pressure below specification
+- Replace oxygen sensor if response time exceeds 100ms
+
+Estimated Repair Time: 1-2 hours

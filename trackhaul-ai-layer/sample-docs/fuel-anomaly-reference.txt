@@ -1,0 +1,53 @@
+TRACKHAUL FLEET OPERATIONS
+Fuel Anomaly Detection Reference Guide
+
+NORMAL FUEL CONSUMPTION BASELINES
+Vehicle Type: Heavy HGV (>20 tonnes)
+- Motorway cruising: 28-32 litres per 100km
+- Urban delivery: 38-45 litres per 100km
+- Mixed route: 33-38 litres per 100km
+
+Vehicle Type: Medium HGV (7.5-20 tonnes)
+- Motorway cruising: 18-22 litres per 100km
+- Urban delivery: 25-30 litres per 100km
+- Mixed route: 20-25 litres per 100km
+
+ANOMALY THRESHOLDS
+Minor anomaly: consumption exceeds baseline by 15-25%
+Major anomaly: consumption exceeds baseline by more than 25%
+Critical anomaly: consumption exceeds baseline by more than 40% or sudden drop indicating possible fuel theft
+
+COMMON CAUSES OF FUEL ANOMALIES
+1. Tyre pressure below specification
+   - Impact: up to 3% increased consumption per 10 kPa below specification
+   - Resolution: check and inflate all tyres to manufacturer specification
+
+2. Excessive idling
+   - Impact: 2-4 litres per hour at idle
+   - Threshold: flag vehicles idling more than 20% of engine-on time
+   - Resolution: driver coaching, automatic engine cutoff after 10 minutes idle
+
+3. Aggressive driving behaviour
+   - Hard acceleration events above 2.5 m/s2 increase consumption by up to 20%
+   - Resolution: driver coaching, review telematics score
+
+4. AdBlue system fault
+   - Symptoms: increased diesel consumption, DEF warning light
+   - Resolution: inspect AdBlue dosing unit and NOx sensors
+
+5. Fuel theft
+   - Pattern: sudden unexplained drop in fuel level not correlated with distance
+   - Threshold: drop of more than 20 litres not correlated with fuelling event
+   - Resolution: immediate investigation, cross-reference with GPS stop data
+
+INVESTIGATION WORKFLOW
+Step 1: Confirm anomaly persists over minimum 3 consecutive trips
+Step 2: Check maintenance history for open faults
+Step 3: Review driver behaviour telematics for same period
+Step 4: Cross-reference with fuel card transaction records
+Step 5: Escalate to fleet engineer if no cause identified within 48 hours
+
+REPORTING
+All major and critical anomalies must be logged in the fleet management system
+Monthly fuel efficiency report submitted to operations director
+Vehicles with recurring anomalies flagged for scheduled inspection

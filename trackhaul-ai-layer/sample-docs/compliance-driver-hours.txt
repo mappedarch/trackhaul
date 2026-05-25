@@ -1,0 +1,44 @@
+TRACKHAUL COMPLIANCE REFERENCE
+EU Driver Hours Regulations — Regulation (EC) No 561/2006
+
+DAILY DRIVING LIMITS
+Maximum daily driving time: 9 hours
+Extended daily driving time (permitted twice per week): 10 hours
+Minimum daily rest period: 11 hours consecutive
+Reduced daily rest (permitted 3 times between weekly rests): 9 hours consecutive
+
+WEEKLY LIMITS
+Maximum weekly driving time: 56 hours
+Maximum fortnightly driving time: 90 hours
+Minimum weekly rest: 45 hours consecutive
+Reduced weekly rest (must be compensated within 3 weeks): 24 hours
+
+BREAK REQUIREMENTS
+After 4.5 hours of driving: mandatory break required
+Minimum break duration: 45 minutes
+Break may be split: 15 minutes followed by 30 minutes
+
+TACHOGRAPH REQUIREMENTS
+All vehicles over 3.5 tonnes must have a calibrated digital tachograph
+Tachograph data must be downloaded every 90 days minimum
+Driver card data must be downloaded every 28 days minimum
+Records must be retained for 12 months minimum
+
+PENALTIES — GERMANY
+Exceeding daily driving time by up to 1 hour: EUR 30
+Exceeding daily driving time by more than 2 hours: EUR 150
+Missing tachograph record: EUR 250
+Falsifying tachograph records: EUR 5000 and criminal prosecution
+
+PENALTIES — NETHERLANDS
+Exceeding daily driving time: EUR 100-400 depending on severity
+Tachograph violations: EUR 200-800
+
+PENALTIES — POLAND
+Exceeding daily driving time: PLN 500-1500
+Tachograph violations: PLN 1000-2000
+
+AUDIT REQUIREMENTS
+TrackHaul compliance team must review driver hours weekly
+Automated alerts must trigger when a driver approaches 80% of any limit
+Monthly compliance reports must be submitted to fleet operations director
