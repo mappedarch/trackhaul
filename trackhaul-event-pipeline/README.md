@@ -249,7 +249,7 @@ Both SNS topics restrict publish access to the Step Functions service principal 
 
 ---
 
-## Gotchas and Lessons Learned
+## Lessons learned
 
 **KMS and CloudWatch Logs - encryption context condition is mandatory**
 CloudWatch Logs enforces a strict encryption context when calling `kms:GenerateDataKey`. The key policy must include a `kms:EncryptionContext:aws:logs:arn` condition scoped to the account and region. Without this, log group encryption applies in Terraform but log delivery silently fails at runtime - no error is surfaced in the console.

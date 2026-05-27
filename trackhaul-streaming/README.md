@@ -4,7 +4,7 @@
 ![AWS Provider](https://img.shields.io/badge/AWS%20Provider-~%3E5.0-FF9900?logo=amazon-aws)
 ![License](https://img.shields.io/badge/License-MIT-green)
 
-A GDPR-compliant real-time telemetry streaming pipeline built on AWS. Vehicle telemetry is ingested into Kinesis Data Streams, consumed by a Lambda Enhanced Fan-Out consumer, and delivered to an S3 data lake in Parquet format via Firehose. Anomaly events are forwarded to EventBridge for downstream processing. All data at rest and in transit is encrypted with KMS customer managed keys. No PII enters any payload.
+Vehicle telemetry is ingested into Kinesis Data Streams, consumed by a Lambda Enhanced Fan-Out consumer, and delivered to an S3 data lake in Parquet format via Firehose. Anomaly events are forwarded to EventBridge for downstream processing. All data at rest and in transit is encrypted with KMS customer managed keys. No PII enters any payload.
 
 ---
 
@@ -260,7 +260,7 @@ S3 lifecycle policy hard-deletes telemetry objects after 365 days. Error objects
 
 ---
 
-## Gotchas and Lessons Learned
+## Lessons learned
 
 **KMS key policy and IAM role policy are both required**
 Lambda's IAM role policy must allow `kms:Decrypt` and `kms:GenerateDataKey`, and the KMS key policy must also explicitly list the Lambda role ARN. Either side alone produces an access denied error at runtime. The error message does not clearly identify which side is missing — always verify both.

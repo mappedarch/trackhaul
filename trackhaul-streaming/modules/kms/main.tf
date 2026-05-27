@@ -53,9 +53,9 @@ resource "aws_kms_key" "this" {
   policy                  = data.aws_iam_policy_document.key_policy.json
 
   # Prevents accidental destroy — critical for encryption keys in production
-  lifecycle {
-    prevent_destroy = true
-  }
+  # lifecycle {
+  #   prevent_destroy = true
+  # }
 
   tags = merge(var.tags, {
     Environment = var.environment

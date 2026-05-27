@@ -39,11 +39,11 @@ resource "aws_glue_catalog_table" "telemetry" {
       type = "double"
     }
     columns {
-      name = "fuel_level_pct"
+      name = "fuel_level"
       type = "double"
     }
     columns {
-      name = "engine_temp_c"
+      name = "engine_temp"
       type = "double"
     }
     columns {
