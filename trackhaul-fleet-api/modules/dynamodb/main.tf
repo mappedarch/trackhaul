@@ -8,8 +8,6 @@ resource "aws_dynamodb_table" "vehicles" {
     type = "S"
   }
 
-  # GSI attributes must be declared here even though they are
-  # regular item attributes — DynamoDB requires this
   attribute {
     name = "status"
     type = "S"
@@ -17,6 +15,17 @@ resource "aws_dynamodb_table" "vehicles" {
 
   attribute {
     name = "region"
+    type = "S"
+  }
+
+  # Added for hybrid RAG query pattern — record type per truck
+  attribute {
+    name = "truck_id"
+    type = "S"
+  }
+
+  attribute {
+    name = "record_type"
     type = "S"
   }
 
@@ -34,7 +43,15 @@ resource "aws_dynamodb_table" "vehicles" {
     projection_type = "ALL"
   }
 
-  # Protect production data from accidental terraform destroy
+  # Query all records of a specific type for a specific truck
+  # e.g. all FUEL records for TH-1023, all EVENT records for TH-4821
+  global_secondary_index {
+    name            = "TruckRecordTypeIndex"
+    hash_key        = "truck_id"
+    range_key       = "record_type"
+    projection_type = "ALL"
+  }
+
   lifecycle {
     prevent_destroy = false # Set to true in prod
   }
@@ -49,7 +66,6 @@ resource "aws_dynamodb_table" "vehicles" {
     ManagedBy   = "terraform"
   }
 
-  # KMS encryption — CMK managed outside this module, ARN passed in
   server_side_encryption {
     enabled     = true
     kms_key_arn = var.kms_key_arn
