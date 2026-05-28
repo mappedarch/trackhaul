@@ -23,6 +23,10 @@ data "aws_secretsmanager_secret" "pinecone" {
   name = "trackhaul/dev/pinecone-api-key"
 }
 
+data "aws_kms_key" "dynamodb" {
+  key_id = "alias/trackhaul-dynamodb-dev"
+}
+
 module "s3_kb_source" {
   source      = "../../modules/s3-kb-source"
   environment = var.environment
@@ -53,5 +57,18 @@ module "dynamodb_cache" {
 module "bedrock_guardrails" {
   source      = "../../modules/bedrock-guardrails"
   project     = "trackhaul"
+  environment = var.environment
+}
+
+module "token_tracker" {
+  source      = "../../modules/token-tracker"
+  project     = "trackhaul"
+  environment = var.environment
+  kms_key_arn = data.aws_kms_key.dynamodb.arn
+}
+
+module "bedrock_failover" {
+  source      = "../../modules/bedrock-failover"
+  project     = var.project
   environment = var.environment
 }

@@ -10,6 +10,7 @@ Query strategy:
 """
 
 import json
+from bedrock_client import invoke_with_failover
 import boto3
 import os
 from decimal import Decimal
@@ -161,20 +162,15 @@ Answer:"""
 
 # ── Bedrock Invoke ───────────────────────────────────────────────────────────
 def invoke_claude(prompt: str) -> str:
-    """Call Bedrock Claude with the merged prompt."""
-    body = {
-        "anthropic_version": "bedrock-2023-05-31",
-        "max_tokens": 512,
-        "messages": [{"role": "user", "content": prompt}],
-    }
-    response = bedrock_runtime.invoke_model(
-        modelId=MODEL_ID,
-        contentType="application/json",
-        accept="application/json",
-        body=json.dumps(body),
-    )
-    result = json.loads(response["body"].read())
-    return result["content"][0]["text"]
+    """
+    Invoke Bedrock via failover client.
+    Handles regional failover and circuit breaker automatically.
+    """
+    from model_router import route
+    routing = route(prompt)
+    result  = invoke_with_failover(prompt, preferred_model_id=routing["model_id"])
+    logger.info(f"Bedrock response | region={result['region_used']} tier={result['tier_used']} fallback={result['fallback_occurred']}")
+    return result["answer"]
 
 
 # ── Main handler ─────────────────────────────────────────────────────────────
