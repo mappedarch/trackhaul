@@ -34,3 +34,12 @@ module "lambda_bedrock_wrapper" {
   simulation_mode                = var.simulation_mode
   ssm_parameter_ttl              = 60
 }
+# Drift detector — daily response length drift check across query types
+module "drift_detector" {
+  source = "../../modules/drift-detector"
+
+  environment    = var.environment
+  naming_prefix  = local.prefix
+  kms_key_arn    = aws_kms_key.llmops.arn
+  prompt_version = "active"
+}

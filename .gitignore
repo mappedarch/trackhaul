@@ -79,3 +79,4 @@ token.json
 **/token.json
 **/response.json
 **/.terraform.lock.hcl
+*.zip

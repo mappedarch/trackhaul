@@ -89,7 +89,9 @@ def invoke_bedrock(prompt: str, query: str) -> dict:
 
 def emit_metrics(truck_id: str, query_type: str, fleet_region: str,
                  input_tokens: int, output_tokens: int, latency_ms: float,
-                 is_error: bool, is_throttled: bool) -> None:
+                 prompt_version: str,
+                 is_error: bool, is_throttled: bool,
+                 response_length: int = 0) -> None:
     """
     Emit Tier 1 operational metrics and Tier 2 cost metrics to CloudWatch.
     Two separate put_metric_data calls — different namespaces per strategy.
@@ -146,6 +148,19 @@ def emit_metrics(truck_id: str, query_type: str, fleet_region: str,
                     {"Name": "query_type", "Value": query_type}
                 ],
                 "Value": 1,
+                "Unit":  "Count"
+            },
+            {
+                # Quality and drift metric
+                # response_length is character count of the answer text
+                # Tracked per prompt_version and query_type so drift can be
+                # attributed to a specific prompt change
+                "MetricName": "ResponseLengthMean",
+                "Dimensions": [
+                    {"Name": "prompt_version", "Value": prompt_version},
+                    {"Name": "query_type",     "Value": query_type}
+                ],
+                "Value": response_length,
                 "Unit":  "Count"
             }
         ]
@@ -275,9 +290,12 @@ def handler(event, context):
     # -------------------------------------------------------
     try:
         active_version = fetch_prompt_from_extension(SSM_PROMPT_PARAMETER_NAME)
+        # Extract version label from SSM path e.g. /trackhaul/llmops/prompts/fleet-assistant/active
+        # The active parameter holds the prompt text not a pointer — so we derive version from SSM_PROMPT_PARAMETER_NAME
+        prompt_version = SSM_PROMPT_PARAMETER_NAME.split("/")[-1]  # yields "active" or "v1"
     except Exception as e:
         logger.error(json.dumps({"error": "ssm_fetch_failed", "detail": str(e)}))
-        emit_metrics(truck_id, query_type, fleet_region, 0, 0, 0, is_error=True, is_throttled=False)
+        emit_metrics(truck_id, query_type, fleet_region, 0, 0, 0, "unknown", is_error=True, is_throttled=False)
         raise
 
     # -------------------------------------------------------
@@ -287,13 +305,12 @@ def handler(event, context):
     try:
         response_body = invoke_bedrock(prompt=active_version, query=query)
     except bedrock.exceptions.ThrottlingException:
-        # Throttle is tracked separately — triggers fallback in production
         is_throttled = True
-        emit_metrics(truck_id, query_type, fleet_region, 0, 0, 0, is_error=True, is_throttled=True)
+        emit_metrics(truck_id, query_type, fleet_region, 0, 0, 0, prompt_version, is_error=True, is_throttled=True)
         raise
     except Exception as e:
         logger.error(json.dumps({"error": "bedrock_invoke_failed", "detail": str(e)}))
-        emit_metrics(truck_id, query_type, fleet_region, 0, 0, 0, is_error=True, is_throttled=False)
+        emit_metrics(truck_id, query_type, fleet_region, 0, 0, 0, prompt_version, is_error=True, is_throttled=False)
         raise
 
     latency_ms    = int(time.time() * 1000) - start_ms
@@ -303,12 +320,14 @@ def handler(event, context):
     answer        = response_body.get("content", [{}])[0].get("text", "")
 
     # -------------------------------------------------------
-    # Emit metrics — Tier 1 and Tier 2
+    # Emit metrics 
     # -------------------------------------------------------
     emit_metrics(
         truck_id, query_type, fleet_region,
         input_tokens, output_tokens, latency_ms,
-        is_error=False, is_throttled=False
+        prompt_version=prompt_version,
+        is_error=False, is_throttled=False,
+        response_length=len(answer)   # character count — no PII, just length
     )
 
     # -------------------------------------------------------
