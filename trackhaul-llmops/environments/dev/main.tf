@@ -10,3 +10,13 @@ module "fleet_assistant_prompt" {
 
   prompt_text = file("${path.module}/prompts/fleet-assistant-v1.txt")
 }
+
+# Eval framework — S3 bucket for golden dataset and eval results
+module "eval_framework" {
+  source = "../../modules/eval-framework"
+
+  environment = var.environment
+  naming_prefix = local.prefix
+  kms_key_arn   = aws_kms_key.llmops.arn
+  eval_results_retention_days = 365
+}
