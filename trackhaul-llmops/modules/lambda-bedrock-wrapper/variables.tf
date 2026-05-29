@@ -26,7 +26,7 @@ variable "ssm_prompt_version_arn" {
 variable "bedrock_model_id" {
   description = "Bedrock model ID to invoke"
   type        = string
-  default     = "anthropic.claude-3-sonnet-20240229-v1:0"
+  default     = "eu.anthropic.claude-sonnet-4-5-20250929-v1:0"
 }
 
 variable "kms_key_arn" {

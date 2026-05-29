@@ -7,6 +7,8 @@ data "archive_file" "wrapper" {
   output_path = "${path.module}/../../lambda_src/lambda_bedrock_wrapper.zip"
 }
 
+data "aws_caller_identity" "current" {}
+
 # -------------------------------------------------------
 # CloudWatch Log Group — explicit retention and encryption
 # Never leave log groups to default — cost and compliance risk
@@ -61,10 +63,16 @@ resource "aws_iam_role_policy" "wrapper" {
         ]
       },
       {
-        Sid      = "BedrockInvoke"
-        Effect   = "Allow"
-        Action   = ["bedrock:InvokeModel"]
-        Resource = "arn:aws:bedrock:eu-central-1::foundation-model/${var.bedrock_model_id}"
+        Sid    = "BedrockInvoke"
+        Effect = "Allow"
+        Action = [
+            "bedrock:InvokeModel",
+            "bedrock:InvokeModelWithResponseStream"
+        ]
+        Resource = [
+            "arn:aws:bedrock:eu-central-1:${data.aws_caller_identity.current.account_id}:inference-profile/${var.bedrock_model_id}",
+            "arn:aws:bedrock:*::foundation-model/anthropic.claude-sonnet-4-5-20250929-v1:0"
+        ]
       },
       {
         Sid    = "KMSDecrypt"
@@ -89,6 +97,12 @@ resource "aws_iam_role_policy" "wrapper" {
         Effect   = "Allow"
         Action   = ["logs:CreateLogGroup"]
         Resource = "arn:aws:logs:eu-central-1:281136219737:*"
+       },
+       {
+        Sid    = "CloudWatchMetrics"
+        Effect = "Allow"
+        Action = ["cloudwatch:PutMetricData"]
+        Resource = "*"
        }
     ]
   })
