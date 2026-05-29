@@ -32,6 +32,13 @@ resource "aws_lambda_function" "feedback_capture" {
     }
   }
 
+  logging_config {
+    log_group  = aws_cloudwatch_log_group.feedback_capture.name
+    log_format = "JSON"
+  }
+
+  depends_on = [aws_cloudwatch_log_group.feedback_capture]
+
   kms_key_arn = var.kms_key_arn
 
   tags = var.tags
@@ -64,6 +71,13 @@ resource "aws_lambda_function" "feedback_reingest" {
       GOLDEN_DATASET_PREFIX  = var.golden_dataset_prefix
     }
   }
+
+  logging_config {
+    log_group  = aws_cloudwatch_log_group.feedback_reingest.name
+    log_format = "JSON"
+  }
+
+   depends_on = [aws_cloudwatch_log_group.feedback_reingest]
 
   kms_key_arn = var.kms_key_arn
 

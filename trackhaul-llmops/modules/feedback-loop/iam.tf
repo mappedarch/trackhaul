@@ -50,7 +50,7 @@ resource "aws_iam_role_policy" "feedback_capture" {
           "logs:CreateLogStream",
           "logs:PutLogEvents"
         ]
-        Resource = "arn:aws:logs:*:*:*"
+        Resource = "${aws_cloudwatch_log_group.feedback_capture.arn}:*"
       }
     ]
   })
@@ -124,7 +124,7 @@ resource "aws_iam_role_policy" "feedback_reingest" {
           "logs:CreateLogStream",
           "logs:PutLogEvents"
         ]
-        Resource = "arn:aws:logs:*:*:*"
+        Resource = "${aws_cloudwatch_log_group.feedback_reingest.arn}:*"
       }
     ]
   })

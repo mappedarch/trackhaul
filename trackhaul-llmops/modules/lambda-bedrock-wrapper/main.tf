@@ -93,12 +93,6 @@ resource "aws_iam_role_policy" "wrapper" {
         Resource = "${aws_cloudwatch_log_group.wrapper.arn}:*"
       },
       {
-        Sid      = "CloudWatchLogsCreateGroup"
-        Effect   = "Allow"
-        Action   = ["logs:CreateLogGroup"]
-        Resource = "arn:aws:logs:eu-central-1:281136219737:*"
-       },
-       {
         Sid    = "CloudWatchMetrics"
         Effect = "Allow"
         Action = ["cloudwatch:PutMetricData"]
@@ -134,14 +128,14 @@ resource "aws_lambda_function" "wrapper" {
     }
   }
 
+  logging_config {
+    log_group  = aws_cloudwatch_log_group.wrapper.name
+    log_format = "JSON"
+  }
+
   depends_on = [
     aws_cloudwatch_log_group.wrapper,
     aws_iam_role_policy.wrapper
   ]
 
-}
-
-resource "aws_iam_role_policy_attachment" "lambda_basic_execution" {
-  role       = aws_iam_role.wrapper.name
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
 }

@@ -73,8 +73,7 @@ resource "aws_iam_role_policy" "drift_detector" {
         Effect = "Allow"
         Action = [
           "logs:CreateLogStream",
-          "logs:PutLogEvents",
-          "logs:CreateLogGroup"
+          "logs:PutLogEvents"
         ]
         Resource = "${aws_cloudwatch_log_group.drift_detector.arn}:*"
       },
@@ -86,7 +85,7 @@ resource "aws_iam_role_policy" "drift_detector" {
           "ssm:PutParameter"
         ]
         # Scoped to drift counter path only — not all SSM parameters
-        Resource = "arn:aws:ssm:eu-central-1:*:parameter/trackhaul/llmops/drift-counter/*"
+        Resource = "arn:aws:ssm:eu-central-1:281136219737:parameter/trackhaul/llmops/drift-counter/*"
       },
       {
         Sid      = "SNSPublish"
@@ -105,11 +104,6 @@ resource "aws_iam_role_policy" "drift_detector" {
       }
     ]
   })
-}
-
-resource "aws_iam_role_policy_attachment" "drift_detector_basic" {
-  role       = aws_iam_role.drift_detector.name
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
 }
 
 # -------------------------------------------------------
@@ -132,6 +126,11 @@ resource "aws_lambda_function" "drift_detector" {
       SNS_TOPIC_ARN      = aws_sns_topic.drift_alerts.arn
       PROMPT_VERSION     = var.prompt_version
     }
+  }
+
+  logging_config {
+    log_group  = aws_cloudwatch_log_group.drift_detector.name
+    log_format = "JSON"
   }
 
   depends_on = [
