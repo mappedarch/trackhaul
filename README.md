@@ -14,7 +14,7 @@ All infrastructure is defined in Terraform using a modular structure. No manual 
 | 2 | Serverless Fleet Management API | Done | [trackhaul-fleet-api](./trackhaul-fleet-api/) |
 | 3 | Event-Driven Processing Pipeline | Done | [trackhaul-event-pipeline](./trackhaul-event-pipeline/) |
 | 4 | Real-Time Streaming Telemetry | Done | [trackhaul-streaming](./trackhaul-streaming/) |
-| 5 | AI Fleet Intelligence Layer | Planned | - |
+| 5 | AI Fleet Intelligence Layer | Done | [trackhaul-ai-layer](./trackhaul-ai-layer/) |
 | 6 | LLMOps and AIOps | Planned | - |
 | 7 | Agentic AI and Multi-Agent System | Planned | - |
 
@@ -28,7 +28,7 @@ All infrastructure is defined in Terraform using a modular structure. No manual 
 |---|---|---|
 | Terraform | >= 1.6 | Infrastructure as Code |
 | AWS CLI | >= 2.13 | AWS authentication and CLI operations |
-| Python | >= 3.11 | Lambda functions and AI layer |
+| Python | >= 3.12 | Lambda functions and AI layer |
 | Git | Any | Version control |
 | VSCode | Any | Editor |
 
@@ -62,7 +62,7 @@ trackhaul/
 ├── trackhaul-fleet-api/             # Project 2 — Serverless Fleet API
 ├── trackhaul-event-pipeline/        # Project 3 — Event-Driven Pipeline
 ├── trackhaul-streaming/             # Project 4 — Real-Time Streaming Telemetry
-├── trackhaul-ai/                    # Project 5 — AI Fleet Intelligence Layer (planned)
+├── trackhaul-ai-layer/              # Project 5 — AI Fleet Intelligence Layer
 ├── trackhaul-llmops/                # Project 6 — LLMOps and AIOps (planned)
 ├── trackhaul-agents/                # Project 7 — Agentic AI (planned)
 └── README.md
@@ -102,7 +102,7 @@ terraform apply
 | Encryption | KMS customer managed keys per data classification boundary |
 | PII isolation | No PII enters event payloads or LLM inputs — truck IDs only |
 | Audit trail | Immutable CloudTrail logs in Log Archive account with WORM S3 Object Lock |
-| AI data residency | All Bedrock inference in `eu-west-1` — enforced at IAM and SCP level |
+| AI data residency | All Bedrock inference within EU regions — enforced at IAM policy level |
 | Least privilege | Every Lambda function and service has its own scoped execution role |
 
 ---
