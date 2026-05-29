@@ -20,3 +20,17 @@ module "eval_framework" {
   kms_key_arn   = aws_kms_key.llmops.arn
   eval_results_retention_days = 365
 }
+
+# Bedrock wrapper — single instrumentation point for all LLM invocations
+module "lambda_bedrock_wrapper" {
+  source = "../../modules/lambda-bedrock-wrapper"
+
+  environment                    = var.environment
+  extension_layer_arn            = var.extension_layer_arn
+  ssm_prompt_active_pointer_name = module.fleet_assistant_prompt.prompt_active_pointer_name
+  ssm_prompt_active_pointer_arn  = module.fleet_assistant_prompt.prompt_active_pointer_arn
+  ssm_prompt_version_arn         = module.fleet_assistant_prompt.prompt_version_arn
+  kms_key_arn                    = aws_kms_key.llmops.arn
+  simulation_mode                = var.simulation_mode
+  ssm_parameter_ttl              = 60
+}
