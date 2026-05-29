@@ -138,6 +138,15 @@ def emit_metrics(truck_id: str, query_type: str, fleet_region: str,
                 ],
                 "Value": input_tokens,
                 "Unit":  "Count"
+            },
+            {
+                "MetricName": "InvocationsTotal",
+                "Dimensions": [
+                    {"Name": "model_id",   "Value": BEDROCK_MODEL_ID},
+                    {"Name": "query_type", "Value": query_type}
+                ],
+                "Value": 1,
+                "Unit":  "Count"
             }
         ]
     )
