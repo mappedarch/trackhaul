@@ -43,3 +43,15 @@ module "drift_detector" {
   kms_key_arn    = aws_kms_key.llmops.arn
   prompt_version = "active"
 }
+
+# Feedback loop — captures dispatcher ratings and reingests corrections into golden dataset
+module "feedback_loop" {
+  source = "../../modules/feedback-loop"
+
+  environment           = var.environment
+  kms_key_arn           = aws_kms_key.llmops.arn
+  log_retention_days    = 30
+  golden_dataset_bucket = module.eval_framework.eval_bucket_name
+  golden_dataset_prefix = "golden-dataset"
+  tags                  = local.common_tags
+}

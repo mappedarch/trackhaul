@@ -80,3 +80,4 @@ token.json
 **/response.json
 **/.terraform.lock.hcl
 *.zip
+trackhaul-llmops/modules/feedback-loop/builds/
