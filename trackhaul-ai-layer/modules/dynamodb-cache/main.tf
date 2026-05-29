@@ -14,6 +14,11 @@ resource "aws_dynamodb_table" "rag_cache" {
     enabled        = true
   }
 
+  server_side_encryption {
+    enabled     = true
+    kms_key_arn = var.kms_key_arn
+  }
+
   tags = {
     Project     = var.project
     Environment = var.environment

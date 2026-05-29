@@ -15,6 +15,9 @@ import boto3
 import os
 from decimal import Decimal
 from boto3.dynamodb.conditions import Key
+import logging
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
 
 # ── Config ───────────────────────────────────────────────────────────────────
 REGION         = os.environ.get("AWS_REGION", "eu-central-1")
@@ -159,6 +162,28 @@ Rules:
 
 Answer:"""
 
+def check_guardrail(user_query: str) -> str | None:
+    """
+    Apply guardrail to raw user query before any processing.
+    Returns blocked message if intervened, None if query is safe.
+    """
+    client = boto3.client("bedrock-runtime", region_name=REGION)
+    guardrail_id      = os.environ.get("GUARDRAIL_ID", "")
+    guardrail_version = os.environ.get("GUARDRAIL_VERSION", "DRAFT")
+
+    if not guardrail_id:
+        return None
+
+    response = client.apply_guardrail(
+        guardrailIdentifier=guardrail_id,
+        guardrailVersion=guardrail_version,
+        source="INPUT",
+        content=[{"text": {"text": user_query}}]
+    )
+    if response.get("action") == "GUARDRAIL_INTERVENED":
+        return response.get("outputs", [{}])[0].get("text", "This query cannot be processed.")
+    return None
+
 
 # ── Bedrock Invoke ───────────────────────────────────────────────────────────
 def invoke_claude(prompt: str) -> str:
@@ -168,7 +193,7 @@ def invoke_claude(prompt: str) -> str:
     """
     from model_router import route
     routing = route(prompt)
-    result  = invoke_with_failover(prompt, preferred_model_id=routing["model_id"])
+    result  = invoke_with_failover(prompt, preferred_model_id=routing["model_id"], preferred_region=routing["region"])
     logger.info(f"Bedrock response | region={result['region_used']} tier={result['tier_used']} fallback={result['fallback_occurred']}")
     return result["answer"]
 
@@ -191,6 +216,11 @@ def lambda_handler(event, context):
 
     if not user_query:
         return {"statusCode": 400, "body": "Missing query field"}
+    
+    # Guardrail check on raw query before any processing
+    blocked = check_guardrail(user_query)
+    if blocked:
+        return {"statusCode": 200, "query": user_query, "answer": blocked, "blocked": True}
 
     kb_context  = query_knowledge_base(user_query)
     live_events = fetch_live_events(

@@ -94,7 +94,6 @@ def _is_tripped(region: str) -> bool:
     return state.get("tripped", False)
 
 
-# ── Bedrock invoke ────────────────────────────────────────────────────────────
 def _invoke(region: str, model_id: str, prompt: str) -> str:
     """
     Single Bedrock invocation attempt against a specific region and model.
@@ -115,45 +114,37 @@ def _invoke(region: str, model_id: str, prompt: str) -> str:
     result = json.loads(response["body"].read())
     return result["content"][0]["text"]
 
-
 # ── Public interface ──────────────────────────────────────────────────────────
-def invoke_with_failover(prompt: str, preferred_model_id: str = None) -> dict:
+def invoke_with_failover(prompt: str, preferred_model_id: str = None, preferred_region: str = None) -> dict:
     """
     Attempt Bedrock invocation across the failover chain.
     Skips tripped regions. Records failures and successes.
     Returns dict with answer, region used, tier used, and whether fallback occurred.
-
     preferred_model_id — passed from model_router, used at primary tier only.
+    preferred_region   — passed from model_router, used at primary tier only.
     If None, chain defaults are used throughout.
     """
     last_error = None
-
     for i, target in enumerate(FAILOVER_CHAIN):
-        region   = target["region"]
+        region   = preferred_region   if i == 0 and preferred_region   else target["region"]
         model_id = preferred_model_id if i == 0 and preferred_model_id else target["model_id"]
         tier     = target["tier"]
-
         if _is_tripped(region) and tier == "primary":
             logger.info(f"Circuit breaker tripped for {region} — skipping to fallback")
             continue
-
         try:
             logger.info(f"Invoking Bedrock | region={region} model={model_id} tier={tier}")
             answer = _invoke(region, model_id, prompt)
             _record_success(region)
-
             return {
-                "answer":           answer,
-                "region_used":      region,
-                "tier_used":        tier,
+                "answer":            answer,
+                "region_used":       region,
+                "tier_used":         tier,
                 "fallback_occurred": tier != "primary",
             }
-
         except Exception as e:
             logger.error(f"Bedrock invocation failed | region={region} tier={tier} error={e}")
             _record_failure(region)
             last_error = e
             continue
-
-    # All targets exhausted
     raise RuntimeError(f"All Bedrock failover targets exhausted. Last error: {last_error}")
