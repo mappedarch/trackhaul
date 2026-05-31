@@ -74,6 +74,7 @@ def invoke_fault_agent(state: OrchestratorState) -> OrchestratorState:
     result        = _extract_worker_result(worker_output)
     log = result["investigation_log"]
     log.append("Orchestrator: fault agent completed")
+    _audit_log(state, "worker_invoked", {"worker": "fault_agent"})
     return {
         **state,
         "routed_to":          "fault_agent",
@@ -90,6 +91,7 @@ def invoke_fuel_agent(state: OrchestratorState) -> OrchestratorState:
     result        = _extract_worker_result(worker_output)
     log = result["investigation_log"]
     log.append("Orchestrator: fuel agent completed")
+    _audit_log(state, "worker_invoked", {"worker": "fuel_agent"})
     return {
         **state,
         "routed_to":          "fuel_agent",
@@ -106,6 +108,7 @@ def invoke_safety_agent(state: OrchestratorState) -> OrchestratorState:
     result        = _extract_worker_result(worker_output)
     log = result["investigation_log"]
     log.append("Orchestrator: safety agent completed")
+    _audit_log(state, "worker_invoked", {"worker": "safety_agent"})
     return {
         **state,
         "routed_to":          "safety_agent",
@@ -155,7 +158,8 @@ def dispatch_alert(state: OrchestratorState) -> OrchestratorState:
 
     log.append(f"Alert dispatch: FIRED — severity={severity} truck={state['truck_id']}")
     logger.info({"event": "alert_dispatched", "alert": alert})
-
+    _audit_log(state, "alert_evaluated", {"severity": str(severity)})
+    
     return {**state, "investigation_log": log}
 
 def escalate_incident(state: OrchestratorState) -> OrchestratorState:
@@ -202,6 +206,24 @@ def escalate_incident(state: OrchestratorState) -> OrchestratorState:
 
     return {**state, "investigation_log": log}
 
+def _audit_log(state: OrchestratorState, event: str, detail: dict = {}):
+    """
+    Emits a structured CloudWatch log for every significant agent action.
+    caller_id and session_id are included on every entry — GDPR audit requirement.
+    Never raises — audit failure must never crash the agent.
+    """
+    try:
+        logger.info(json.dumps({
+            "event":      event,
+            "truck_id":   state.get("truck_id"),
+            "caller_id":  state.get("caller_id", "UNKNOWN"),
+            "caller_role": state.get("caller_role", "UNKNOWN"),
+            "session_id": state.get("session_id", "UNKNOWN"),
+            "routed_to":  state.get("routed_to"),
+            **detail,
+        }))
+    except Exception as e:
+        logger.error(f"Audit log failed: {e}")
 
 def build_orchestrator():
     graph = StateGraph(OrchestratorState)

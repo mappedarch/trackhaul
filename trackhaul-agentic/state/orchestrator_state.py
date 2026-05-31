@@ -3,10 +3,10 @@ from enum import Enum
 
 
 class IncidentType(str, Enum):
-    FAULT_CODE    = "fault_code"
-    FUEL_ANOMALY  = "fuel_anomaly"
-    SAFETY_SCORE  = "safety_score"
-    UNKNOWN       = "unknown"
+    FAULT_CODE   = "fault_code"
+    FUEL_ANOMALY = "fuel_anomaly"
+    SAFETY_SCORE = "safety_score"
+    UNKNOWN      = "unknown"
 
 
 class OrchestratorState(TypedDict):
@@ -16,7 +16,7 @@ class OrchestratorState(TypedDict):
     payload:       dict
 
     # --- Populated by orchestrator classify node ---
-    routed_to:     Optional[str]
+    routed_to: Optional[str]
 
     # --- Populated by worker agents, written back by orchestrator ---
     worker_result: Optional[dict]
@@ -31,3 +31,10 @@ class OrchestratorState(TypedDict):
 
     # --- Audit trail ---
     investigation_log: list[str]
+
+    # --- Caller identity (GDPR audit requirement) ---
+    # Propagated from SQS message attributes through the full graph.
+    # Every node and tool call is attributable to a specific user.
+    caller_id:   str
+    caller_role: str
+    session_id:  str
