@@ -16,18 +16,25 @@ orchestrator = build_orchestrator()
 
 def _invoke(payload: dict, truck_id: str = "TH-4821") -> dict:
     """Helper — builds minimal valid initial state and invokes orchestrator."""
-    return orchestrator.invoke({
-        "truck_id":            truck_id,
-        "incident_type":       None,
-        "payload":             payload,
-        "routed_to":           None,
-        "worker_result":       None,
-        "recommended_action":  None,
-        "escalate":            None,
-        "guardrail_triggered": None,
-        "guardrail_reason":    None,
-        "investigation_log":   [],
-    })
+    return orchestrator.invoke(
+        {
+            "truck_id":            truck_id,
+            "incident_type":       None,
+            "payload":             payload,
+            "routed_to":           None,
+            "worker_result":       None,
+            "recommended_action":  None,
+            "escalate":            None,
+            "guardrail_triggered": None,
+            "guardrail_reason":    None,
+            "investigation_log":   [],
+            # Security fields — required by OrchestratorState (Day 48)
+            "caller_id":           "test-user",
+            "caller_role":         "dispatcher",
+            "session_id":          "test-session-001",
+        },
+        {"recursion_limit": 25},
+    )
 
 
 # ── Happy path ────────────────────────────────────────────────────────────────
