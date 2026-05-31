@@ -16,8 +16,16 @@ resource "aws_kms_alias" "agentic" {
 module "agent_queue" {
   source = "../../modules/agent-queue"
 
-  environment                    = var.environment
-  kms_key_arn                    = aws_kms_key.agentic.arn
-  lambda_reserved_concurrency    = var.lambda_reserved_concurrency
-  lambda_src_path = "${path.module}/../../lambda_src/agent_handler.zip"
+  environment                 = var.environment
+  kms_key_arn                 = aws_kms_key.agentic.arn
+  lambda_reserved_concurrency = var.lambda_reserved_concurrency
+  lambda_src_path             = "${path.module}/../../lambda_src/agent_handler.zip"
+  guardrail_id                = module.bedrock_guardrail.guardrail_id
+  guardrail_version           = module.bedrock_guardrail.guardrail_version
+}
+
+module "bedrock_guardrail" {
+  source      = "../../modules/bedrock-guardrail"
+  environment = var.environment
+  tags        = local.common_tags
 }

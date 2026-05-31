@@ -27,3 +27,13 @@ output "lambda_function_arn" {
   description = "Agent handler Lambda function ARN"
   value       = aws_lambda_function.agent_handler.arn
 }
+
+output "escalation_queue_url" {
+  description = "Escalation queue URL — for incidents requiring human review"
+  value       = aws_sqs_queue.incident_escalation.url
+}
+
+output "escalation_queue_arn" {
+  description = "Escalation queue ARN"
+  value       = aws_sqs_queue.incident_escalation.arn
+}

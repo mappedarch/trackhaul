@@ -42,3 +42,13 @@ variable "kms_key_arn" {
   description = "KMS key ARN for SQS and Lambda encryption"
   type        = string
 }
+
+variable "guardrail_id" {
+  type        = string
+  description = "Bedrock Guardrail ID attached to all LLM calls"
+}
+
+variable "guardrail_version" {
+  type        = string
+  description = "Pinned guardrail version — never use DRAFT in production"
+}

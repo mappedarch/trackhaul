@@ -106,10 +106,33 @@ resource "aws_lambda_function" "agent_handler" {
     variables = {
       ENVIRONMENT = var.environment
       LOG_LEVEL   = "INFO"
+      GUARDRAIL_ID      = var.guardrail_id
+      GUARDRAIL_VERSION = var.guardrail_version
+      ESCALATION_QUEUE_URL  = aws_sqs_queue.incident_escalation.url
     }
   }
 
   kms_key_arn = var.kms_key_arn
+}
+
+resource "aws_iam_role_policy" "agent_handler_bedrock" {
+  name = "${local.name_prefix}-agent-handler-bedrock"
+  role = aws_iam_role.agent_handler.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "bedrock:InvokeModel",
+          "bedrock:InvokeModelWithResponseStream",
+          "bedrock:ApplyGuardrail"
+        ]
+        Resource = "*"
+      }
+    ]
+  })
 }
 
 # -------------------------------------------------------------------
@@ -122,3 +145,30 @@ resource "aws_lambda_event_source_mapping" "sqs_to_agent" {
   batch_size       = 1
 
 }
+
+# -------------------------------------------------------------------
+# Escalation queue — receives incidents where agent set escalate=True
+# Separate from DLQ — these are deliberate escalations, not failures
+# -------------------------------------------------------------------
+resource "aws_sqs_queue" "incident_escalation" {
+  name                      = "${local.name_prefix}-incident-escalation-queue"
+  message_retention_seconds = 1209600  # 14 days — escalations need longer retention
+  kms_master_key_id         = var.kms_key_arn
+}
+
+resource "aws_iam_role_policy" "agent_handler_escalation" {
+  name = "${local.name_prefix}-agent-handler-escalation"
+  role = aws_iam_role.agent_handler.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect   = "Allow"
+        Action   = ["sqs:SendMessage"]
+        Resource = aws_sqs_queue.incident_escalation.arn
+      }
+    ]
+  })
+}
+

@@ -34,14 +34,16 @@ def handler(event, context):
             }))
 
             result = orchestrator.invoke({
-                "truck_id":           truck_id,
-                "incident_type":      None,
-                "payload":            body,        # full SQS body passed as payload
-                "routed_to":          None,
-                "worker_result":      None,
-                "recommended_action": None,
-                "escalate":           None,
-                "investigation_log":  [],
+                "truck_id":              truck_id,
+                "incident_type":         None,
+                "payload":               body,
+                "routed_to":             None,
+                "worker_result":         None,
+                "recommended_action":    None,
+                "escalate":              None,
+                "guardrail_triggered":   None,   
+                "guardrail_reason":      None,  
+                "investigation_log":     [],
             })
 
             logger.info(json.dumps({

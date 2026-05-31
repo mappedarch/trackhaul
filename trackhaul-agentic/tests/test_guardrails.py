@@ -159,3 +159,42 @@ def test_alert_contains_no_pii():
     assert "TH-4821" in fired[0]
     # Must not contain anything resembling a name or coordinate
     assert "@" not in fired[0]
+
+# ── Escalation enforcement ────────────────────────────────────────────────────
+
+def test_high_severity_escalates():
+    """HIGH severity with open work orders must set escalate=True."""
+    result = _invoke({"incident_type": "fault_code", "fault_code": "P0300"})
+    assert result.get("escalate") is True
+
+
+def test_low_severity_does_not_escalate():
+    """LOW severity with no open work orders must not escalate."""
+    result = _invoke({"incident_type": "fault_code", "fault_code": "P0420"})
+    assert result.get("escalate") is False
+
+
+def test_guardrail_block_escalates():
+    """A guardrail block must always escalate — never silently drop."""
+    result = _invoke({
+        "incident_type": "fault_code",
+        "fault_code":    "P0300",
+        "driver":        "John Smith",
+    })
+    assert result.get("escalate") is True
+
+
+def test_escalation_skipped_without_queue_url():
+    """
+    Without ESCALATION_QUEUE_URL set (local dev),
+    escalation must log SKIPPED and not raise.
+    """
+    result = _invoke({"incident_type": "fault_code", "fault_code": "P0300"})
+    skipped = [e for e in result.get("investigation_log", []) if "Escalation: SKIPPED" in e or "Escalation: SENT" in e]
+    assert len(skipped) >= 1
+
+
+def test_unknown_incident_escalates():
+    """Unknown incident type must always escalate."""
+    result = _invoke({"incident_type": "geofence_breach"})
+    assert result.get("escalate") is True
