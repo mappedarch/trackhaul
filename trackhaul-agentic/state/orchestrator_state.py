@@ -10,20 +10,13 @@ class IncidentType(str, Enum):
 
 
 class OrchestratorState(TypedDict):
-    """
-    State that flows through the orchestrator graph.
-    
-    The orchestrator populates incident_type, then delegates to the
-    appropriate worker agent. The worker result is written back here
-    before the orchestrator produces the final recommendation.
-    """
     # --- Input fields (set by Lambda on entry) ---
     truck_id:      str
     incident_type: Optional[IncidentType]
-    payload:       dict          # raw incident payload — worker agents read from here
+    payload:       dict
 
     # --- Populated by orchestrator classify node ---
-    routed_to:     Optional[str] # which worker was invoked
+    routed_to:     Optional[str]
 
     # --- Populated by worker agents, written back by orchestrator ---
     worker_result: Optional[dict]
@@ -31,6 +24,10 @@ class OrchestratorState(TypedDict):
     # --- Final output ---
     recommended_action: Optional[str]
     escalate:           Optional[bool]
+
+    # --- Guardrail fields ---
+    guardrail_triggered: Optional[bool]
+    guardrail_reason:    Optional[str]
 
     # --- Audit trail ---
     investigation_log: list[str]
