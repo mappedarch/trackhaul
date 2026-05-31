@@ -15,7 +15,7 @@ All infrastructure is defined in Terraform using a modular structure. No manual 
 | 3 | Event-Driven Processing Pipeline | Done | [trackhaul-event-pipeline](./trackhaul-event-pipeline/) |
 | 4 | Real-Time Streaming Telemetry | Done | [trackhaul-streaming](./trackhaul-streaming/) |
 | 5 | AI Fleet Intelligence Layer | Done | [trackhaul-ai-layer](./trackhaul-ai-layer/) |
-| 6 | LLMOps and AIOps | Planned | - |
+| 6 | LLMOps and AIOps | Done | [trackhaul-llmops](./trackhaul-llmops/) · [trackhaul-aiops](./trackhaul-aiops/) |
 | 7 | Agentic AI and Multi-Agent System | Planned | - |
 
 ---
@@ -63,7 +63,8 @@ trackhaul/
 ├── trackhaul-event-pipeline/        # Project 3 — Event-Driven Pipeline
 ├── trackhaul-streaming/             # Project 4 — Real-Time Streaming Telemetry
 ├── trackhaul-ai-layer/              # Project 5 — AI Fleet Intelligence Layer
-├── trackhaul-llmops/                # Project 6 — LLMOps and AIOps (planned)
+├── trackhaul-llmops/                # Project 6 — LLMOps and Observability
+├── trackhaul-aiops/                 # Project 6 — AIOps Anomaly Explainer
 ├── trackhaul-agents/                # Project 7 — Agentic AI (planned)
 └── README.md
 ```
