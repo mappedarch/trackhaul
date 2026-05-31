@@ -6,6 +6,9 @@ from agents.incident_responder import build_graph as build_fault_graph
 from agents.fuel_agent import build_fuel_graph
 from agents.safety_agent import build_safety_graph
 from agents.guardrails import validate_input
+import os
+import json
+import boto3
 
 logger = logging.getLogger(__name__)
 
@@ -155,22 +158,67 @@ def dispatch_alert(state: OrchestratorState) -> OrchestratorState:
 
     return {**state, "investigation_log": log}
 
+def escalate_incident(state: OrchestratorState) -> OrchestratorState:
+    """
+    Escalation node — runs after alert dispatch.
+    Only fires when escalate=True.
+    Publishes a structured message to the escalation SQS queue.
+    No PII — truck ID only.
+    """
+    log = list(state.get("investigation_log", []))
+
+    if not state.get("escalate"):
+        log.append("Escalation: SKIPPED — escalate=False")
+        return {**state, "investigation_log": log}
+
+    queue_url = os.environ.get("ESCALATION_QUEUE_URL")
+
+    if not queue_url:
+        # Local dev — no queue configured, log and continue
+        log.append("Escalation: SKIPPED — ESCALATION_QUEUE_URL not set (local dev)")
+        return {**state, "investigation_log": log}
+
+    message = {
+        "truck_id":           state["truck_id"],
+        "routed_to":          state.get("routed_to"),
+        "recommended_action": state.get("recommended_action"),
+        "guardrail_triggered": state.get("guardrail_triggered"),
+        "guardrail_reason":   state.get("guardrail_reason"),
+    }
+
+    try:
+        sqs = boto3.client("sqs", region_name="eu-central-1")
+        sqs.send_message(
+            QueueUrl=queue_url,
+            MessageBody=json.dumps(message),
+        )
+        log.append(f"Escalation: SENT — truck={state['truck_id']} queue={queue_url}")
+        logger.info({"event": "escalation_sent", "truck_id": state["truck_id"]})
+
+    except Exception as e:
+        # Never crash the graph on escalation failure — log and continue
+        log.append(f"Escalation: FAILED — {str(e)}")
+        logger.error({"event": "escalation_failed", "error": str(e)})
+
+    return {**state, "investigation_log": log}
+
 
 def build_orchestrator():
     graph = StateGraph(OrchestratorState)
 
-    graph.add_node("validate", validate_input)
-    graph.add_node("classify", classify_incident)
-    graph.add_node("fault",    invoke_fault_agent)
-    graph.add_node("fuel",     invoke_fuel_agent)
-    graph.add_node("safety",   invoke_safety_agent)
-    graph.add_node("unknown",  handle_unknown)
-    graph.add_node("alert",    dispatch_alert)
+    graph.add_node("validate",  validate_input)
+    graph.add_node("classify",  classify_incident)
+    graph.add_node("fault",     invoke_fault_agent)
+    graph.add_node("fuel",      invoke_fuel_agent)
+    graph.add_node("safety",    invoke_safety_agent)
+    graph.add_node("unknown",   handle_unknown)
+    graph.add_node("alert",     dispatch_alert)
+    graph.add_node("escalate",  escalate_incident)
 
     graph.set_entry_point("validate")
 
     graph.add_conditional_edges("validate", route_after_validation, {
-        "blocked":  END,
+        "blocked":  "escalate",   # blocked payloads go straight to escalation
         "classify": "classify",
     })
 
@@ -181,10 +229,11 @@ def build_orchestrator():
         "unknown": "unknown",
     })
 
-    graph.add_edge("fault",   "alert")
-    graph.add_edge("fuel",    "alert")
-    graph.add_edge("safety",  "alert")
-    graph.add_edge("unknown", "alert")
-    graph.add_edge("alert",   END)
+    graph.add_edge("fault",    "alert")
+    graph.add_edge("fuel",     "alert")
+    graph.add_edge("safety",   "alert")
+    graph.add_edge("unknown",  "alert")
+    graph.add_edge("alert",    "escalate")
+    graph.add_edge("escalate", END)
 
     return graph.compile()
