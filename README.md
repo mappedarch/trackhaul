@@ -1,6 +1,6 @@
 # TrackHaul AI Fleet Intelligence Platform
 
-A production-grade AWS platform built for TrackHaul, a fictional European logistics operator managing large number of trucks (e.g. 10,000). The platform covers GDPR-compliant multi-account governance, serverless fleet operations, real-time telemetry processing, and an AI fleet intelligence layer built on Amazon Bedrock.
+A production-grade AWS platform built for TrackHaul, a fictional European logistics operator managing 10,000 trucks across Germany, Poland and the Netherlands. The platform covers GDPR-compliant multi-account governance, serverless fleet operations, real-time telemetry processing, an AI fleet intelligence layer built on Amazon Bedrock, LLMOps observability, and an agentic multi-agent incident response system.
 
 All infrastructure is defined in Terraform using a modular structure. No manual console configuration is used. Security controls are applied at every layer.
 
@@ -16,7 +16,7 @@ All infrastructure is defined in Terraform using a modular structure. No manual 
 | 4 | Real-Time Streaming Telemetry | Done | [trackhaul-streaming](./trackhaul-streaming/) |
 | 5 | AI Fleet Intelligence Layer | Done | [trackhaul-ai-layer](./trackhaul-ai-layer/) |
 | 6 | LLMOps and AIOps | Done | [trackhaul-llmops](./trackhaul-llmops/) · [trackhaul-aiops](./trackhaul-aiops/) |
-| 7 | Agentic AI and Multi-Agent System | Planned | - |
+| 7 | Agentic AI and Multi-Agent System | Done | [trackhaul-agentic](./trackhaul-agentic/) |
 
 ---
 
@@ -28,7 +28,7 @@ All infrastructure is defined in Terraform using a modular structure. No manual 
 |---|---|---|
 | Terraform | >= 1.6 | Infrastructure as Code |
 | AWS CLI | >= 2.13 | AWS authentication and CLI operations |
-| Python | >= 3.12 | Lambda functions and AI layer |
+| Python | >= 3.11 | Lambda functions, AI layer and agentic system |
 | Git | Any | Version control |
 | VSCode | Any | Editor |
 
@@ -58,14 +58,14 @@ aws sts get-caller-identity --profile trackhaul-mgmt
 
 ```
 trackhaul/
-├── trackhaul-landing-zone/          # Project 1 — Multi-Account Landing Zone
-├── trackhaul-fleet-api/             # Project 2 — Serverless Fleet API
-├── trackhaul-event-pipeline/        # Project 3 — Event-Driven Pipeline
-├── trackhaul-streaming/             # Project 4 — Real-Time Streaming Telemetry
-├── trackhaul-ai-layer/              # Project 5 — AI Fleet Intelligence Layer
-├── trackhaul-llmops/                # Project 6 — LLMOps and Observability
-├── trackhaul-aiops/                 # Project 6 — AIOps Anomaly Explainer
-├── trackhaul-agents/                # Project 7 — Agentic AI (planned)
+├── trackhaul-landing-zone/     — Project 1: Multi-Account Landing Zone
+├── trackhaul-fleet-api/        — Project 2: Serverless Fleet API
+├── trackhaul-event-pipeline/   — Project 3: Event-Driven Pipeline
+├── trackhaul-streaming/        — Project 4: Real-Time Streaming Telemetry
+├── trackhaul-ai-layer/         — Project 5: AI Fleet Intelligence Layer
+├── trackhaul-llmops/           — Project 6: LLMOps and Observability
+├── trackhaul-aiops/            — Project 6: AIOps Anomaly Explainer
+├── trackhaul-agentic/          — Project 7: Agentic AI and Multi-Agent System
 └── README.md
 ```
 
@@ -101,16 +101,17 @@ terraform apply
 | Data residency | SCPs enforce `eu-central-1` and `eu-west-1` only — no resource creation permitted outside EU |
 | IAM access | No standing IAM users — all access via IAM Identity Center with short-lived credentials |
 | Encryption | KMS customer managed keys per data classification boundary |
-| PII isolation | No PII enters event payloads or LLM inputs — truck IDs only |
+| PII isolation | No PII enters event payloads, telemetry records, agent context or LLM inputs — truck IDs only |
 | Audit trail | Immutable CloudTrail logs in Log Archive account with WORM S3 Object Lock |
 | AI data residency | All Bedrock inference within EU regions — enforced at IAM policy level |
 | Least privilege | Every Lambda function and service has its own scoped execution role |
+| Agent guardrails | Bedrock Guardrail applied to raw incident payload before any tool call or model invocation |
 
 ---
 
 ## Compliance
 
-GDPR compliance is a primary design constraint throughout this platform. EU data residency is enforced at the SCP layer, not left to convention. Driver PII does not appear in any event payload, telemetry record, or LLM prompt. CloudTrail provides a complete audit trail of all API activity across all accounts.
+GDPR compliance is a primary design constraint throughout this platform. EU data residency is enforced at the SCP layer, not left to convention. Driver PII does not appear in any event payload, telemetry record, agent state or LLM prompt. CloudTrail provides a complete audit trail of all API activity across all accounts.
 
 ---
 
@@ -125,4 +126,4 @@ The architecture and implementation decisions across all projects are documented
 | Part 2 | [Chaos to Control - The Control Tower](https://mappedarch.medium.com/building-a-gdpr-compliant-fleet-intelligence-platform-on-aws-phase-1-the-landing-zone-a4b3ab2dcff1) |
 | Part 3 | [Fleet Management API](https://medium.com/@mappedarch/fleet-intelligence-platform-on-aws-part-3-fleet-management-api-2467e6fd19db) |
 
-*Remaining parts are upcoming.*
+*Parts 4–7 are upcoming.*
