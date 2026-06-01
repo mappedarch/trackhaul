@@ -17,6 +17,26 @@ variable "management_account_id" {
   type        = string
 }
 
+variable "security_account_id" {
+  description = "AWS Account ID for Security account"
+  type        = string
+}
+
+variable "log_archive_account_id" {
+  description = "AWS Account ID for Log Archive account"
+  type        = string
+}
+
+variable "dev_account_id" {
+  description = "AWS Account ID for Dev account"
+  type        = string
+}
+
+variable "prod_account_id" {
+  description = "AWS Account ID for Prod account"
+  type        = string
+}
+
 variable "org_id" {
   description = "AWS Organizations ID"
   type        = string

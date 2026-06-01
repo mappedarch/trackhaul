@@ -1,8 +1,4 @@
 # providers.tf
-# This file tells Terraform which cloud provider to use and how to connect.
-# We define the AWS provider and pin its version.
-# Version pinning is critical — without it Terraform may auto-upgrade
-# the provider and break your code.
 
 terraform {
   required_version = ">= 1.6.0"
@@ -15,7 +11,6 @@ terraform {
   }
 }
 
-# Default provider — connects to Management account, eu-central-1
 provider "aws" {
   region = var.aws_region
 
@@ -30,8 +25,6 @@ provider "aws" {
   }
 }
 
-# Provider for Security account — used for GuardDuty org configuration
-/*
 provider "aws" {
   alias  = "security"
   region = var.aws_region
@@ -50,4 +43,3 @@ provider "aws" {
     }
   }
 }
-*/

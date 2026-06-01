@@ -68,6 +68,7 @@ data "aws_guardduty_detector" "security" {
 # Must happen after delegated admin is set up
 # -------------------------------------------------------
 # Organization configuration must run from Security account
+
 resource "aws_guardduty_organization_configuration" "this" {
   auto_enable_organization_members = "ALL"
   detector_id                      = data.aws_guardduty_detector.security.id
@@ -91,5 +92,17 @@ resource "aws_guardduty_organization_configuration" "this" {
   }
 
   provider   = aws.security
+  depends_on = [aws_guardduty_organization_admin_account.this]
+}
+
+resource "null_resource" "guardduty_org_config" {
+  triggers = {
+    detector_id = data.aws_guardduty_detector.security.id
+  }
+
+  provisioner "local-exec" {
+    command = "aws guardduty update-organization-configuration --detector-id ${data.aws_guardduty_detector.security.id} --auto-enable-organization-members ALL --region eu-central-1 --profile security"
+  }
+
   depends_on = [aws_guardduty_organization_admin_account.this]
 }
